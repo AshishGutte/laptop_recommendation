@@ -86,7 +86,7 @@ Make sure the cleaned file (`flipkart_laptop_cleann.csv`) is available.
 ```bash
 # Create and activate a virtual environment
 python -m venv real
-source real/bin/activate  # On Windows: .\real\Scripts\activate
+source real/bin/activate 
 
 # Install dependencies
 pip install -r requirements.txt
