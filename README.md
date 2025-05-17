@@ -71,9 +71,11 @@ The `data_cleaning.py` script:
 - Extracts specs like `Processor`, `RAM`, `DDR`, `OS`, `Storage`, `Display`, and `Warranty` using regex
 - Saves the cleaned file as `flipkart_laptop_cleann.csv`
 
+### 📦 Run the cleaning script
+
 ```bash
 python data_cleaning.py
-````
+
 
 ---
 
