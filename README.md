@@ -1,13 +1,3 @@
-Thanks! You’ve added great information, especially about `laptop_recommendation_app.py`. I’ll now revise your `README.md` to improve:
-
-* ✅ Flow and structure
-* ✅ Remove duplicate sections
-* ✅ Fix formatting issues (e.g., escaped backslashes, code block closures)
-* ✅ Ensure consistency and clarity
-
----
-
-### ✅ Final Cleaned and Structured `README.md`
 
 ```markdown
 # 💻 Conversational Laptop Recommendation System (RAG-based with LangChain)
@@ -71,11 +61,9 @@ The `data_cleaning.py` script:
 - Extracts specs like `Processor`, `RAM`, `DDR`, `OS`, `Storage`, `Display`, and `Warranty` using regex
 - Saves the cleaned file as `flipkart_laptop_cleann.csv`
 
-### 📦 Run the cleaning script
-
 ```bash
 python data_cleaning.py
-
+````
 
 ---
 
@@ -88,7 +76,7 @@ Make sure the cleaned file (`flipkart_laptop_cleann.csv`) is available.
 ```bash
 # Create and activate a virtual environment
 python -m venv real
-source real/bin/activate 
+source real/bin/activate  # On Windows: .\real\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
