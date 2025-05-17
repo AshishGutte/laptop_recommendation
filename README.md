@@ -1,116 +1,157 @@
-# 💻 Laptop Recommendation Chatbot using Flipkart Data
+Thanks! You’ve added great information, especially about `laptop_recommendation_app.py`. I’ll now revise your `README.md` to improve:
 
-This project is an end-to-end pipeline that scrapes laptop listings from Flipkart, cleans and enriches the data, and uses **LangChain**, **FAISS**, and **Streamlit** to build a chatbot that provides laptop recommendations based on user queries.
+* ✅ Flow and structure
+* ✅ Remove duplicate sections
+* ✅ Fix formatting issues (e.g., escaped backslashes, code block closures)
+* ✅ Ensure consistency and clarity
+
+---
+
+### ✅ Final Cleaned and Structured `README.md`
+
+```markdown
+# 💻 Conversational Laptop Recommendation System (RAG-based with LangChain)
+
+This is an intelligent chatbot system that provides personalized laptop recommendations based on user queries. It uses RAG (Retrieval-Augmented Generation) with LangChain, FAISS for vector search, and Ollama for local LLM inference (LLaMA 3.2). The app supports follow-up questions using memory and works on cleaned Flipkart laptop data.
 
 ---
 
 ## 🚀 Features
 
-* ✅ Web scraping of laptop data from Flipkart using **Selenium + BeautifulSoup**
-* ✅ Enriches each product with battery life, weight, webcam, and display size
-* ✅ Cleans and structures the data with **pandas**
-* ✅ Chatbot interface powered by **Streamlit + LangChain**
-* ✅ Intelligent filtering by **price**, **specifications**, and **user intent** (e.g., gaming, office use)
-* ✅ Context-aware question answering and **follow-up support**
-* ✅ Product comparison and specification summary
+- ✅ Conversational UI built with **Streamlit**
+- ✅ Supports **follow-up questions** with memory
+- ✅ Embedding-powered semantic search using **FAISS**
+- ✅ Uses **LangChain** with local LLM via **Ollama (LLaMA 3.2)**
+- ✅ Real-time laptop recommendations using specs and price
+- ✅ Parses and cleans Flipkart laptop data
+- ✅ Recommends based on user needs (e.g., gaming, student, engineer)
 
 ---
 
-## 🧱 Project Structure
+## 📁 Project Structure
 
 ```
-.
-├── flipkart_scraper.py          # Step 1: Web scraping script
-├── flipkart_laptop_final.csv    # Scraped raw data
-├── data_cleaning.py             # Step 2: Data cleaning & enrichment
-├── flipkart_laptop_cleaned.csv  # Final structured dataset
-├── app.py                       # Streamlit chatbot app
-├── filter.py                    # Custom filtering logic
-├── README.md                    # Project documentation
+
+├── data\_cleaning.py               # Script to clean Flipkart laptop data
+├── laptop\_recommendation\_app.py  # Main Streamlit chatbot app
+├── flipkart\_laptop\_final.csv     # Raw data (from web scraping)
+├── flipkart\_laptop\_cleann.csv    # Cleaned dataset
+├── README.md                      # This file
+
+````
+
+---
+
+## 🔍 Inside `laptop_recommendation_app.py`
+
+This is the **heart of the project**, combining LangChain, FAISS, Ollama, and Streamlit into a conversational app.
+
+### 🔧 Key Modules:
+
+| Function / Component      | Description |
+|---------------------------|-------------|
+| `load_data`               | Loads and parses the cleaned CSV into a Pandas DataFrame |
+| `generate_docs_from_csv`  | Converts each laptop row into a LangChain Document |
+| `create_vectorstore`      | Embeds documents using `sentence-transformers` and builds a FAISS index |
+| `get_top_n_documents`     | Retrieves top 10 documents for a user query using similarity search |
+| `format_docs`             | Converts LangChain docs into clean string format for LLM |
+| `setup_qa_chain`          | Creates a LangChain RetrievalQA chain using Ollama |
+| `run_conversational_qa`   | Handles both new and follow-up queries using chat history |
+| `build_json_response`     | Extracts structured JSON response with specs and URLs |
+| `build_chat_interface`    | Streamlit UI: handles file upload, input, and chat history display |
+
+---
+
+## 🧼 Step 1: Clean the Data
+
+The `data_cleaning.py` script:
+
+- Extracts and cleans the `Price` field
+- Standardizes the `Product Name`
+- Extracts specs like `Processor`, `RAM`, `DDR`, `OS`, `Storage`, `Display`, and `Warranty` using regex
+- Saves the cleaned file as `flipkart_laptop_cleann.csv`
+
+```bash
+python data_cleaning.py
+````
+
+---
+
+## 💬 Step 2: Run the Chatbot App
+
+Make sure the cleaned file (`flipkart_laptop_cleann.csv`) is available.
+
+### 1. 🔧 Set up your environment
+
+```bash
+# Create and activate a virtual environment
+python -m venv real
+source real/bin/activate  # On Windows: .\real\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. 🦙 Install Ollama and LLaMA 3.2
+
+Make sure [Ollama](https://ollama.com/) is installed and the `llama3.2` model is downloaded:
+
+```bash
+ollama run llama3.2
+```
+
+### 3. 🚀 Run the Streamlit app
+
+```bash
+streamlit run laptop_recommendation_app.py
 ```
 
 ---
 
-## 1️⃣ Web Scraping from Flipkart
+## 🧠 How It Works
 
-We use **headless Chrome with Selenium** to navigate through search result pages and extract product details and extra specs (battery, webcam, etc.) from individual product pages.
+1. **CSV Upload**: Upload your cleaned Flipkart laptop CSV.
+2. **Initial Query**: Ask a question like *"Suggest laptops under ₹60000 for programming"*.
+3. **RAG Pipeline**:
 
-> 📁 Output: `flipkart_laptop_final.csv`
-
-```python
-# Setup headless Chrome and loop through 30 pages of laptop results
-# Extract details + visit product pages for specs like battery and webcam
-# Save all collected data to CSV
-```
-
----
-
-## 2️⃣ Data Cleaning
-
-After scraping, we clean and structure the data using pandas.
-
-* Adds columns like `Brand`, `Processor`, `RAM`, `Storage`, etc.
-* Creates combined `text` and `all_text` fields for embedding.
-
-> 📁 Output: `flipkart_laptop_cleaned.csv`
+   * Embeds the laptop data and performs semantic retrieval
+   * Uses Ollama (LLaMA 3.2) to generate answers based on top retrieved docs
+   * Formats the response into a JSON structure (name, price, URL, etc.)
+   * Stores previous responses to support follow-up questions
+4. **Follow-up**: Ask questions like *"What about gaming ones?"* or *"Compare the first two."*
 
 ---
 
-## 3️⃣ Chatbot with LangChain + FAISS + Streamlit
+## 🧪 Tech Stack
 
-### ⚙️ How it works
-
-1. **Upload CSV:** The cleaned laptop data is uploaded.
-2. **Filter Laptops:** Apply filters by price, specs, and purpose (e.g., gaming, office).
-3. **RAG Pipeline:** User question is passed through a LangChain Retrieval-Augmented Generation chain using FAISS and Ollama.
-4. **Recommendations:** Laptops are recommended with price, specs, and URLs.
-5. **Follow-Up Queries:** Users can ask to compare laptops or get full specifications.
-
-### 🧠 Supported Queries
-
-* "Show me laptops under 60k for gaming"
-* "Which laptop is best for students?"
-* "Compare laptop 1 and 2"
-* "What are the specifications of laptop 3?"
+| Component       | Tool/Library                   |
+| --------------- | ------------------------------ |
+| UI              | Streamlit                      |
+| LLM             | Ollama (`llama3.2`)            |
+| Vector Search   | FAISS                          |
+| Embeddings      | Sentence-Transformers (MiniLM) |
+| Memory/Chaining | LangChain                      |
+| Data Handling   | Pandas                         |
+| Data Source     | Flipkart (via scraping)        |
 
 ---
 
-## 🛠 Tech Stack
+## 📌 Sample Queries
 
-* **Python**
-* **Selenium + BeautifulSoup** – Scraping
-* **pandas** – Data Cleaning
-* **Streamlit** – Web App
-* **LangChain + FAISS** – Retrieval-Augmented Generation (RAG)
-* **Ollama** – Local LLM
-* **HuggingFace Embeddings** – Vector representations
+* *"Suggest laptops for a software engineer under ₹80000"*
+* *"Give me lightweight laptops with 16GB RAM"*
+* *"Compare the second one with the first one"*
 
 ---
 
-## 📥 How to Run
+## 📎 Notes
 
-1. **Clone the repo**
+* This app only works on laptop-related queries.
+* All answers are generated using only the uploaded dataset context.
+* Memory allows follow-up questions referencing previous results.
 
-   ```bash
-   git clone https://github.com/your-username/flipkart-laptop-chatbot.git
-   cd flipkart-laptop-chatbot
-   ```
+---
 
-2. **Install dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run the Streamlit app**
-
-   ```bash
-   streamlit run app.py
-   ```
-
-4. **Upload your CSV**
-
-   * Use `flipkart_laptop_cleaned.csv`
 
 
 
